@@ -1,0 +1,35 @@
+{
+    "name": "Product Page PWA",
+    "short_name": "ProductPWA",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#007bff",
+    "icons": [
+      {
+        "src": "images/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "images/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "screenshots": [
+    {
+      "src": "images/screenshot-desktop.png",
+      "sizes": "1024x467",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "images/screenshot-mobile.png",
+      "sizes": "375x807",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+  }
+  

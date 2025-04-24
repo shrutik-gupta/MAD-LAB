@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .book-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .book {
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .book img {
+    width: 100px;
+    height: 140px;
+    object-fit: cover;
+  }
+  
+  .book-info {
+    margin-top: 10px;
+  }
+  

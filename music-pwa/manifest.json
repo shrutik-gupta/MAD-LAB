@@ -1,0 +1,35 @@
+{
+    "name": "Music Album Gallery",
+    "short_name": "MusicAlbums",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#1DB954",
+    "icons": [
+      {
+        "src": "images/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "images/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "images/screenshot-desktop.png",
+        "sizes": "1024x768",
+        "type": "image/png",
+        "form_factor": "wide"
+      },
+      {
+        "src": "images/screenshot-mobile.png",
+        "sizes": "375x667",
+        "type": "image/png",
+        "form_factor": "narrow"
+      }
+    ]
+  }
+  
