@@ -1,0 +1,41 @@
+import 'dart:io';
+
+void main() {
+  stdout.write('Enter a list of integers separated by spaces: ');
+  String input = stdin.readLineSync()!;
+  List<int> numbers = input.split(' ').map(int.parse).toList();
+
+  print('\n--- List Analysis ---');
+  print('Total: ${calculateTotal(numbers)}');
+  print('Highest number: ${findMax(numbers)}');
+  print('Lowest number: ${findMin(numbers)}');
+  print('Average: ${calculateAverage(numbers)}');
+  print('Median: ${calculateMedian(numbers)}');
+}
+
+int calculateTotal(List<int> numbers) {
+  return numbers.reduce((a, b) => a + b);
+}
+
+int findMax(List<int> numbers) {
+  return numbers.reduce((a, b) => a > b ? a : b);
+}
+
+int findMin(List<int> numbers) {
+  return numbers.reduce((a, b) => a < b ? a : b);
+}
+
+double calculateAverage(List<int> numbers) {
+  return calculateTotal(numbers) / numbers.length;
+}
+
+double calculateMedian(List<int> numbers) {
+  List<int> sorted = List.from(numbers)..sort();
+  int middle = sorted.length ~/ 2;
+
+  if (sorted.length % 2 == 1) {
+    return sorted[middle].toDouble();
+  } else {
+    return (sorted[middle - 1] + sorted[middle]) / 2.0;
+  }
+}
