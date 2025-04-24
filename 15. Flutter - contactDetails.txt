@@ -1,0 +1,214 @@
+main.dart:
+
+import 'package:flutter/material.dart';
+import 'contact_form.dart';
+import 'details_page.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Contact Form App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const ContactFormPage(),
+    );
+  }
+}
+
+
+contact_form.dart:
+
+import 'package:flutter/material.dart';
+import 'details_page.dart';
+
+class ContactFormPage extends StatefulWidget {
+  const ContactFormPage({super.key});
+
+  @override
+  State<ContactFormPage> createState() => _ContactFormPageState();
+}
+
+class _ContactFormPageState extends State<ContactFormPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _pinCodeController = TextEditingController();
+  String? _gender;
+  DateTime? _dob;
+  String? _selectedCity;
+
+  List<String> cities = ['New York', 'London', 'Paris', 'Tokyo', 'Mumbai'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Contact details")),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Text('Gender'),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text('Male'),
+                      value: 'Male',
+                      groupValue: _gender,
+                      onChanged: (value) => setState(() => _gender = value),
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text('Female'),
+                      value: 'Female',
+                      groupValue: _gender,
+                      onChanged: (value) => setState(() => _gender = value),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Text('Date of birth: '),
+                  TextButton(
+                    child: Text(
+                      _dob == null
+                          ? 'Select Date'
+                          : "${_dob!.day}/${_dob!.month}/${_dob!.year}",
+                    ),
+                    onPressed: () async {
+                      DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime(2000),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          _dob = picked;
+                        });
+                      }
+                    },
+                  )
+                ],
+              ),
+              TextFormField(
+                controller: _addressController,
+                decoration: const InputDecoration(labelText: 'Address'),
+              ),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: _selectedCity,
+                hint: const Text('Select City'),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCity = value!;
+                  });
+                },
+                items: cities
+                    .map((city) =>
+                        DropdownMenuItem(value: city, child: Text(city)))
+                    .toList(),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _pinCodeController,
+                decoration: const InputDecoration(labelText: 'Pin Code'),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailsPage(
+                        name: _nameController.text,
+                        gender: _gender ?? '',
+                        dob: _dob != null
+                            ? "${_dob!.day}/${_dob!.month}/${_dob!.year}"
+                            : '',
+                        address: _addressController.text,
+                        city: _selectedCity ?? '',
+                        pinCode: _pinCodeController.text,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+details_page.dart:
+
+import 'package:flutter/material.dart';
+
+class DetailsPage extends StatelessWidget {
+  final String name;
+  final String gender;
+  final String dob;
+  final String address;
+  final String city;
+  final String pinCode;
+
+  const DetailsPage({
+    super.key,
+    required this.name,
+    required this.gender,
+    required this.dob,
+    required this.address,
+    required this.city,
+    required this.pinCode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('All details')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Name: $name"),
+            Text("Gender: $gender"),
+            Text("DOB: $dob"),
+            Text("Address: $address"),
+            Text("City: $city"),
+            Text("Pin Code: $pinCode"),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('BACK'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,88 @@
+main.dart:
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(BookListApp());
+
+class BookListApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: BookListScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Book {
+  final String name;
+  final String author;
+  final double price;
+
+  Book(this.name, this.author, this.price);
+}
+
+class BookListScreen extends StatelessWidget {
+  final List<Book> books = [
+    Book("Flutter for Beginners", "John Smith", 299.99),
+    Book("Dart Essentials", "Jane Doe", 199.49),
+    Book("Mobile Dev Handbook", "Alice Johnson", 349.00),
+    Book("UI/UX Guide", "Bob Martin", 159.99),
+    Book("State Management", "Sara Lee", 289.00),
+    Book("Advanced Flutter", "Michael Chen", 399.00),
+    Book("Firebase Integration", "Lisa Ray", 179.50),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Book details")),
+      body: ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: books.length,
+        itemBuilder: (context, index) {
+          final book = books[index];
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    'assets/book.jpg', // Use your own image
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Book Name: ${book.name}",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(height: 8),
+                        Text("Author: ${book.author}"),
+                        SizedBox(height: 8),
+                        Text("Price: ₹${book.price.toStringAsFixed(2)}"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
+pubspec.yaml:
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

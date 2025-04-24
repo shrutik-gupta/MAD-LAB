@@ -1,0 +1,195 @@
+main.dart:
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+void main() => runApp(ConverterApp());
+
+class ConverterApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Converter & Age Calculator',
+      home: HomePage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+// Home page with drawer navigation
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+enum DrawerSections { temperature, age }
+
+class _HomePageState extends State<HomePage> {
+  var currentPage = DrawerSections.temperature;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget container;
+    if (currentPage == DrawerSections.temperature) {
+      container = TemperatureConverterPage();
+    } else {
+      container = AgeCalculatorPage();
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Text("Converter App")),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: Text("Menu", style: TextStyle(fontSize: 24, color: Colors.white)),
+              decoration: BoxDecoration(color: Colors.blue),
+            ),
+            ListTile(
+              title: Text("Temperature Converter"),
+              leading: Icon(Icons.thermostat),
+              onTap: () {
+                setState(() => currentPage = DrawerSections.temperature);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text("Age Calculator"),
+              leading: Icon(Icons.calendar_today),
+              onTap: () {
+                setState(() => currentPage = DrawerSections.age);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+      body: container,
+    );
+  }
+}
+
+// 🌡️ Temperature Converter Page
+class TemperatureConverterPage extends StatefulWidget {
+  @override
+  _TemperatureConverterPageState createState() => _TemperatureConverterPageState();
+}
+
+class _TemperatureConverterPageState extends State<TemperatureConverterPage> {
+  final controller = TextEditingController();
+  double? result;
+
+  void convertToFahrenheit() {
+    final input = double.tryParse(controller.text);
+    if (input != null) {
+      setState(() {
+        result = (input * 9 / 5) + 32;
+      });
+    }
+  }
+
+  void convertToCelsius() {
+    final input = double.tryParse(controller.text);
+    if (input != null) {
+      setState(() {
+        result = (input - 32) * 5 / 9;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Text("Temperature Converter", style: TextStyle(fontSize: 22)),
+          TextField(
+            controller: controller,
+            decoration: InputDecoration(labelText: "Enter Temperature"),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(onPressed: convertToFahrenheit, child: Text("To Fahrenheit")),
+              ElevatedButton(onPressed: convertToCelsius, child: Text("To Celsius")),
+            ],
+          ),
+          SizedBox(height: 20),
+          if (result != null)
+            Text("Converted: ${result!.toStringAsFixed(2)}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+// 📅 Age Calculator Page
+class AgeCalculatorPage extends StatefulWidget {
+  @override
+  _AgeCalculatorPageState createState() => _AgeCalculatorPageState();
+}
+
+class _AgeCalculatorPageState extends State<AgeCalculatorPage> {
+  DateTime? birthDate;
+  int? age;
+
+  void pickBirthDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        birthDate = picked;
+        final now = DateTime.now();
+        age = now.year - picked.year;
+        if (now.month < picked.month ||
+            (now.month == picked.month && now.day < picked.day)) {
+          age = age! - 1;
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final formatter = DateFormat('yyyy-MM-dd');
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Text("Age Calculator", style: TextStyle(fontSize: 22)),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: pickBirthDate,
+            child: Text("Select Birth Date"),
+          ),
+          if (birthDate != null) ...[
+            SizedBox(height: 10),
+            Text("Birth Date: ${formatter.format(birthDate!)}"),
+          ],
+          SizedBox(height: 20),
+          if (age != null)
+            Text("Your Age: $age years",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+
+pubspec.yaml:
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.18.1
+
+run - flutter pub get

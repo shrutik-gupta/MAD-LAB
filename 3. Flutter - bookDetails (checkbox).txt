@@ -1,0 +1,128 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MarksApp());
+
+class MarksApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Book Details',
+      home: MarksForm(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MarksForm extends StatefulWidget {
+  @override
+  _MarksFormState createState() => _MarksFormState();
+}
+
+class _MarksFormState extends State<MarksForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _nameController = TextEditingController();
+  final _subjectController = TextEditingController();
+  final _marksController = TextEditingController();
+
+  String _selectedCategory = 'TW';
+
+  String? _validateTextOnly(String? value, String field) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter $field';
+    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      return '$field must contain only letters';
+    }
+    return null;
+  }
+
+  String? _validatePositiveMarks(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter marks';
+    }
+    final number = num.tryParse(value);
+    if (number == null || number < 0) {
+      return 'Marks must be a non-negative number';
+    }
+    return null;
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Details submitted successfully!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  Widget _buildRadio(String title) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Radio<String>(
+          value: title,
+          groupValue: _selectedCategory,
+          onChanged: (value) {
+            setState(() {
+              _selectedCategory = value!;
+            });
+          },
+        ),
+        Text(title),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Book details')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+                validator: (value) => _validateTextOnly(value, 'Name'),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _subjectController,
+                decoration: InputDecoration(labelText: 'Subject'),
+                validator: (value) => _validateTextOnly(value, 'Subject'),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('Category:'),
+                  _buildRadio('TW'),
+                  _buildRadio('IA'),
+                  _buildRadio('Or'),
+                ],
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _marksController,
+                decoration: InputDecoration(labelText: 'Marks'),
+                keyboardType: TextInputType.number,
+                validator: _validatePositiveMarks,
+              ),
+              SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: Text('Submit'),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

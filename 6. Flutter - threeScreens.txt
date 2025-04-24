@@ -1,0 +1,192 @@
+main.dart:
+import 'package:flutter/material.dart';
+import 'first.dart';
+
+void main() => runApp(StudentApp());
+
+class StudentApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Student Info App',
+      home: FirstScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+first.dart:
+import 'package:flutter/material.dart';
+import 'second.dart';
+
+class FirstScreen extends StatefulWidget {
+  @override
+  _FirstScreenState createState() => _FirstScreenState();
+}
+
+class _FirstScreenState extends State<FirstScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _mobileController = TextEditingController();
+
+  void _goToSecondScreen() {
+    if (_formKey.currentState!.validate()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SecondScreen(
+            name: _nameController.text,
+            mobile: _mobileController.text,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Step 1: Basic Info')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter your name' : null,
+              ),
+              TextFormField(
+                controller: _mobileController,
+                decoration: InputDecoration(labelText: 'Mobile Number'),
+                keyboardType: TextInputType.phone,
+                validator: (value) =>
+                    value == null || value.length != 10 ? 'Enter valid 10-digit mobile' : null,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(onPressed: _goToSecondScreen, child: Text('Next')),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+second.dart:
+import 'package:flutter/material.dart';
+import 'third.dart';
+
+class SecondScreen extends StatefulWidget {
+  final String name;
+  final String mobile;
+
+  SecondScreen({required this.name, required this.mobile});
+
+  @override
+  _SecondScreenState createState() => _SecondScreenState();
+}
+
+class _SecondScreenState extends State<SecondScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _addressController = TextEditingController();
+  final _cityController = TextEditingController();
+
+  void _goToThirdScreen() {
+    if (_formKey.currentState!.validate()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ThirdScreen(
+            name: widget.name,
+            mobile: widget.mobile,
+            address: _addressController.text,
+            city: _cityController.text,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Step 2: Address Info')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _addressController,
+                decoration: InputDecoration(labelText: 'Address'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter your address' : null,
+              ),
+              TextFormField(
+                controller: _cityController,
+                decoration: InputDecoration(labelText: 'City'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter your city' : null,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(onPressed: _goToThirdScreen, child: Text('Next')),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+third.dart:
+import 'package:flutter/material.dart';
+
+class ThirdScreen extends StatelessWidget {
+  final String name;
+  final String mobile;
+  final String address;
+  final String city;
+
+  ThirdScreen({
+    required this.name,
+    required this.mobile,
+    required this.address,
+    required this.city,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Step 3: Review Info')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Name: $name', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 8),
+            Text('Mobile: $mobile', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 8),
+            Text('Address: $address', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 8),
+            Text('City: $city', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 30),
+            Center(
+              child: ElevatedButton(
+                onPressed: () =>
+                    Navigator.popUntil(context, (route) => route.isFirst),
+                child: Text('Start Over'),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

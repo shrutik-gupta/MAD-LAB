@@ -1,0 +1,81 @@
+main.dart:
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(SongListApp());
+
+class SongListApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Song List',
+      home: SongListPage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Song {
+  final String name;
+  final String singer;
+  final String category;
+  final String imagePath;
+
+  Song({
+    required this.name,
+    required this.singer,
+    required this.category,
+    required this.imagePath,
+  });
+}
+
+class SongListPage extends StatelessWidget {
+  final List<Song> songs = [
+    Song(name: "Believer", singer: "Imagine Dragons", category: "Rock", imagePath: "assets/song.jpg"),
+    Song(name: "Shape of You", singer: "Ed Sheeran", category: "Pop", imagePath: "assets/song.jpg"),
+    Song(name: "Blinding Lights", singer: "The Weeknd", category: "R&B", imagePath: "assets/song.jpg"),
+    Song(name: "Senorita", singer: "Shawn Mendes", category: "Pop", imagePath: "assets/song.jpg"),
+    Song(name: "Perfect", singer: "Ed Sheeran", category: "Romantic", imagePath: "assets/song.jpg"),
+    Song(name: "Faded", singer: "Alan Walker", category: "Electronic", imagePath: "assets/song.jpg"),
+    Song(name: "Levitating", singer: "Dua Lipa", category: "Dance", imagePath: "assets/song.jpg"),
+    Song(name: "Memories", singer: "Maroon 5", category: "Pop", imagePath: "assets/song.jpg"),
+    Song(name: "Stay", singer: "Justin Bieber", category: "Pop", imagePath: "assets/song.jpg"),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Song List")),
+      body: ListView.builder(
+        itemCount: songs.length,
+        itemBuilder: (context, index) {
+          final song = songs[index];
+          return Card(
+            margin: EdgeInsets.all(10),
+            elevation: 4,
+            child: ListTile(
+              contentPadding: EdgeInsets.all(10),
+              leading: Image.asset(song.imagePath, width: 70, height: 70, fit: BoxFit.cover),
+              title: Text(song.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Singer: ${song.singer}"),
+                  Text("Category: ${song.category}"),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
+pubspec.yaml:
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

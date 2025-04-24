@@ -1,0 +1,149 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const CalculatorApp());
+}
+
+class CalculatorApp extends StatelessWidget {
+  const CalculatorApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Simple Calculator',
+      home: const Calculator(),
+    );
+  }
+}
+
+class Calculator extends StatefulWidget {
+  const Calculator({Key? key}) : super(key: key);
+
+  @override
+  State<Calculator> createState() => _CalculatorState();
+}
+
+class _CalculatorState extends State<Calculator> {
+  String _output = '0';
+  String _currentNumber = '';
+  double _num1 = 0;
+  String _operand = '';
+  bool _newCalculation = true;
+
+  void _buttonPressed(String buttonText) {
+    setState(() {
+      if (buttonText == 'C') {
+        _output = '0';
+        _currentNumber = '';
+        _num1 = 0;
+        _operand = '';
+        _newCalculation = true;
+      } else if (['+', '-', '×', '÷'].contains(buttonText)) {
+        if (_currentNumber.isNotEmpty) {
+          _num1 = double.parse(_currentNumber);
+          _operand = buttonText;
+          _currentNumber = '';
+          _output = _num1.toString() + ' ' + _operand;
+        }
+      } else if (buttonText == '=') {
+        if (_operand.isNotEmpty && _currentNumber.isNotEmpty) {
+          double num2 = double.parse(_currentNumber);
+          double result = 0;
+
+          switch (_operand) {
+            case '+':
+              result = _num1 + num2;
+              break;
+            case '-':
+              result = _num1 - num2;
+              break;
+            case '×':
+              result = _num1 * num2;
+              break;
+            case '÷':
+              if (num2 != 0) {
+                result = _num1 / num2;
+              } else {
+                _output = 'Error';
+                return;
+              }
+              break;
+          }
+
+          _output = result.toString();
+          if (_output.endsWith('.0')) {
+            _output = _output.substring(0, _output.length - 2);
+          }
+
+          _currentNumber = '';
+          _operand = '';
+          _newCalculation = true;
+        }
+      } else {
+        if (_newCalculation && _operand.isEmpty) {
+          _currentNumber = buttonText;
+          _output = _currentNumber;
+          _newCalculation = false;
+        } else {
+          _currentNumber += buttonText;
+          _output = _operand.isEmpty
+              ? _currentNumber
+              : _num1.toString() + ' ' + _operand + ' ' + _currentNumber;
+        }
+      }
+    });
+  }
+
+  Widget _buildButton(String label) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: ElevatedButton(
+          onPressed: () => _buttonPressed(label),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Simple Calculator')),
+      body: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.all(24.0),
+            child: Text(
+              _output,
+              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const Divider(thickness: 1),
+          Expanded(
+            child: Column(
+              children: [
+                Row(children: [_buildButton('7'), _buildButton('8'), _buildButton('9')]),
+                Row(children: [_buildButton('4'), _buildButton('5'), _buildButton('6')]),
+                Row(children: [_buildButton('1'), _buildButton('2'), _buildButton('3')]),
+                Row(children: [_buildButton('0'), _buildButton('+'), _buildButton('-')]),
+                Row(children: [_buildButton('×'), _buildButton('÷'), _buildButton('C')]),
+                Row(children: [_buildButton('=')]),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

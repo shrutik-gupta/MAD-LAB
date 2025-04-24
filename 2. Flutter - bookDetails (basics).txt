@@ -1,0 +1,107 @@
+main.dart:
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(BookApp());
+
+class BookApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Book Details',
+      home: BookForm(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class BookForm extends StatefulWidget {
+  @override
+  _BookFormState createState() => _BookFormState();
+}
+
+class _BookFormState extends State<BookForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _bookNameController = TextEditingController();
+  final _authorController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _quantityController = TextEditingController();
+
+  String? _validateTextOnly(String? value, String field) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter $field';
+    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      return '$field must contain only letters';
+    }
+    return null;
+  }
+
+  String? _validatePositiveNumber(String? value, String field) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter $field';
+    }
+    final number = num.tryParse(value);
+    if (number == null || number < 0) {
+      return '$field must be a non-negative number';
+    }
+    return null;
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Book details submitted successfully!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Book details')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _bookNameController,
+                decoration: InputDecoration(labelText: 'Book Name'),
+                validator: (value) => _validateTextOnly(value, 'Book Name'),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _authorController,
+                decoration: InputDecoration(labelText: 'Author'),
+                validator: (value) => _validateTextOnly(value, 'Author'),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _priceController,
+                decoration: InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+                validator: (value) => _validatePositiveNumber(value, 'Price'),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _quantityController,
+                decoration: InputDecoration(labelText: 'Quantity'),
+                keyboardType: TextInputType.number,
+                validator: (value) => _validatePositiveNumber(value, 'Quantity'),
+              ),
+              SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: Text('Submit'),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
